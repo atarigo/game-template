@@ -4,11 +4,17 @@ import structlog
 
 
 def format_callsite(logger, method_name, event_dict: dict) -> dict:
+    """
+    1. remove module, func_name, lineno from event_dict
+    2. add callsite if not present
+    """
+
     module = event_dict.pop("module", "")
     func_name = event_dict.pop("func_name", "")
     lineno = event_dict.pop("lineno", "")
 
-    event_dict["callsite"] = f"{module}.{func_name}:{lineno}"
+    if "callsite" not in event_dict:
+        event_dict["callsite"] = f"{module}.{func_name}:{lineno}"
 
     return event_dict
 
@@ -28,8 +34,7 @@ def configure(level: int = logging.DEBUG) -> None:
                     structlog.processors.CallsiteParameter.LINENO,
                 ],
             ),
-            # Disable callsite for now, cause we use decorators to handle exceptions
-            # format_callsite,
+            format_callsite,
             structlog.processors.StackInfoRenderer(),
             structlog.dev.set_exc_info,
             structlog.processors.TimeStamper(fmt="%Y-%m-%d %H:%M:%S", utc=False),
