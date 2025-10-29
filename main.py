@@ -1,8 +1,12 @@
+import logging
+
+from src.core.logs import configure
 from src.main import Game, Settings
 
 
 def main():
     settings = Settings()
+    configure(logging.DEBUG)
 
     game = Game()
     game.setup(settings)
