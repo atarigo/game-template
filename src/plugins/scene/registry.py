@@ -4,7 +4,8 @@ import structlog
 
 if TYPE_CHECKING:
     from src.core.events import EventManager
-    from src.scenes.base import Scene
+
+    from .base import Scene
 
 logger = structlog.get_logger(__name__)
 
