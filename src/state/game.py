@@ -1,6 +1,7 @@
 from enum import Enum
 
 from src.core.events import EventManager
+from src.core.logs import called
 
 
 class GameState(Enum):
@@ -14,5 +15,6 @@ class GameStateManager:
 
         events.subscribe(GameState.Quitting, self.game_quit_handler)
 
+    @called
     def game_quit_handler(self, *args, **kwargs):
         self.current = GameState.Quitting
