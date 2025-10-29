@@ -8,8 +8,7 @@ def main():
     settings = Settings()
     configure(logging.DEBUG)
 
-    game = Game()
-    game.setup(settings)
+    game = Game(settings)
     game.run()
 
 
