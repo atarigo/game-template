@@ -59,14 +59,42 @@ class CharacterUI(UI):
         pygame.draw.rect(screen, Color.C, window)
 
 
+class StoreScene(Scene):
+    def __init__(self, events: EventManager):
+        super().__init__(events=events)
+
+    def handle_event(self, keydown: pygame.event.Event):
+        if keydown.key == pygame.K_ESCAPE:
+            self.events.emit("pop", {"scene": "store"})
+
+    def draw(self, screen: pygame.Surface):
+        # title
+        font = pygame.font.Font(None, 72)
+        title = font.render("Store", True, (55, 55, 255))
+        title_rect = title.get_rect(center=(screen.get_width() // 2, 150))
+        screen.blit(title, title_rect)
+
+
 class CityScene(Scene):
     def __init__(self, events: EventManager):
         super().__init__(events=events)
 
         self.UIs: set[UI] = set()
 
-        self.events.subscribe("toggle", self._on_push)
+        self.children: list[Scene] = []
+
+        self.pause = False
+
+        self.events.subscribe("toggle", self._on_toggle)
         self.events.subscribe("pop", self._on_pop)
+        self.events.subscribe("push", self._on_push)
+
+    def _on_push(self, data: dict):
+        scene = data.get("scene")
+        if scene == "store":
+            new_scene = StoreScene(self.events)
+            self.children.append(new_scene)
+            self.pause = True
 
     def _on_pop(self, data: dict):
         ui = data.get("ui")
@@ -74,7 +102,13 @@ class CityScene(Scene):
             if self.UIs:
                 self.UIs.pop()
 
-    def _on_push(self, data: dict):
+        scene = data.get("scene")
+        if scene == "store":
+            # todo: use pop cause there is only one child now
+            self.children.pop()
+            self.pause = False
+
+    def _on_toggle(self, data: dict):
         ui = data.get("ui")
         if ui == "item":
             new_ui = InventoryPanel(self.events)
@@ -89,6 +123,12 @@ class CityScene(Scene):
             self.UIs.add(new_ui)
 
     def handle_event(self, keydown: pygame.event.Event):
+        for child in self.children:
+            child.handle_event(keydown)
+
+        if self.pause:
+            return
+
         for ui in self.UIs:
             ui.handle_event(keydown)
 
@@ -98,6 +138,9 @@ class CityScene(Scene):
         if keydown.key == pygame.K_c:
             self.events.emit("toggle", {"ui": "character"})
 
+        if keydown.key == pygame.K_f:
+            self.events.emit("push", {"scene": "store"})
+
         if keydown.key == pygame.K_ESCAPE:
             if len(self.UIs) == 0:
                 self.events.emit(SceneEvent.SWITCH_TO, {"scene": "landing"})
@@ -105,6 +148,12 @@ class CityScene(Scene):
                 self.events.emit("pop", {"ui": "any"})
 
     def draw(self, screen: pygame.Surface):
+        for child in self.children:
+            child.draw(screen)
+
+        if self.pause:
+            return
+
         # title
         font = pygame.font.Font(None, 72)
         title = font.render("City", True, (255, 255, 255))
