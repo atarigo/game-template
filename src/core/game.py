@@ -1,17 +1,23 @@
+from typing import TYPE_CHECKING
+
 import pygame
 import structlog
 
-from src.setup.config import Settings
 from src.state import GameState, GameStateManager, SceneState
 
-from .events import EventManager
-from .scenes import SceneManager
+if TYPE_CHECKING:
+    from src.core.events import EventManager
+    from src.core.scenes import SceneManager
+    from src.setup.config import Settings
+
 
 logger = structlog.get_logger(__name__)
 
 
 class Game:
-    def __init__(self, settings: Settings, events: EventManager, scenes: SceneManager):
+    def __init__(
+        self, settings: "Settings", events: "EventManager", scenes: "SceneManager"
+    ):
         self.settings = settings
         self.events = events
         self.scenes = scenes
