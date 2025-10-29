@@ -2,53 +2,22 @@ from typing import Type
 
 import pygame
 
-from src.state import SceneState
+from src.scenes.base import Scene
+from src.state import SceneStateManager
 
 from .events import EventManager
-from .logs import called
-
-
-class Scene:
-    def __init__(self, events: EventManager):
-        self.events: EventManager = events
-
-    def on_enter(self):
-        pass
-
-    def on_exit(self):
-        pass
-
-    def handle_event(self, keydown: pygame.event.Event):
-        pass
-
-    def update(self, dt: float):
-        pass
-
-    def draw(self, screen: pygame.Surface):
-        pass
 
 
 class SceneManager:
     def __init__(self, events: EventManager):
-        self.events = events
+        self.state = SceneStateManager(events=events)
 
-        self.current: Scene | None = None
-        self._scenes: dict[str, Type[Scene]] = {}
-
-        events.subscribe(SceneState.SwitchTo, self.switch_to)
+    @property
+    def current(self) -> Scene | None:
+        return self.state.current
 
     def register(self, name: str, scene: Type[Scene]):
-        self._scenes[name] = scene
-
-    @called
-    def switch_to(self, data: dict):
-        scene_name = data.get("scene_name")
-        if next_scene := self._scenes.get(scene_name, None):
-            if self.current:
-                self.current.on_exit()
-
-            self.current = next_scene(self.events)
-            self.current.on_enter()
+        self.state.add_scene(name, scene)
 
     def handle_event(self, keydown: pygame.event.Event):
         self.current.handle_event(keydown=keydown)
