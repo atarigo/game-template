@@ -13,6 +13,12 @@ class Scene:
     def on_exit(self):
         pass
 
+    def on_pause(self):
+        pass
+
+    def on_resume(self):
+        pass
+
     def handle_event(self, keydown: pygame.event.Event):
         pass
 

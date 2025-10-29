@@ -2,7 +2,7 @@ import pygame
 import structlog
 
 from src.core.events import EventManager
-from src.state import SceneState
+from src.scenes.events import SceneEvent
 
 from .base import Scene
 
@@ -32,7 +32,7 @@ class CityScene(Scene):
         elif keydown.key == pygame.K_RIGHT:
             logger.info("move right")
         elif keydown.key == pygame.K_ESCAPE:
-            self.events.emit(SceneState.SwitchTo, {"scene_name": "landing"})
+            self.events.emit(SceneEvent.SWITCH_TO, {"scene": "landing"})
 
     def draw(self, screen: pygame.Surface):
         # title

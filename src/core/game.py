@@ -3,11 +3,12 @@ from typing import TYPE_CHECKING
 import pygame
 import structlog
 
-from src.state import GameState, GameStateManager, SceneState
+from src.scenes.events import SceneEvent
+from src.state import GameState, GameStateManager
 
 if TYPE_CHECKING:
     from src.core.events import EventManager
-    from src.core.scenes import SceneManager
+    from src.scenes.manager import SceneManager
     from src.setup.config import Settings
 
 
@@ -32,7 +33,9 @@ class Game:
 
         self.screen = pygame.display.get_surface()
         self.clock = pygame.time.Clock()
-        self.events.emit(SceneState.SwitchTo, {"scene_name": "landing"})
+
+        # Initialize first scene
+        self.events.emit(SceneEvent.SWITCH_TO, {"scene": "landing"})
 
     def __del__(self):
         logger.info("Game destroyed")
