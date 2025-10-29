@@ -2,7 +2,8 @@ import pygame
 import structlog
 
 from src.core.events import EventManager
-from src.state import GameState, SceneState
+from src.scenes.events import SceneEvent
+from src.state import GameState
 
 from .base import Scene
 
@@ -47,7 +48,7 @@ class LandingScene(Scene):
             self.events.emit(GameState.Quitting)
         elif keydown.key == pygame.K_RETURN:
             if self.selected == 0:
-                self.events.emit(SceneState.SwitchTo, {"scene_name": "city"})
+                self.events.emit(SceneEvent.SWITCH_TO, {"scene": "city"})
             elif self.selected == 1:
                 self.events.emit(GameState.Quitting)
 
