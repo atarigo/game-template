@@ -1,10 +1,11 @@
 import pygame
 import structlog
 
-from .core.events import EventManager
-from .core.scenes import SceneManager, SceneState
-from .setup.config import Settings
-from .state import GameState, GameStateManager
+from src.setup.config import Settings
+from src.state import GameState, GameStateManager
+
+from .events import EventManager
+from .scenes import SceneManager, SceneState
 
 logger = structlog.get_logger(__name__)
 

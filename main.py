@@ -1,7 +1,7 @@
 import logging
 
+from src.core.game import Game, Settings
 from src.core.logs import configure
-from src.main import Game, Settings
 
 
 def main():
