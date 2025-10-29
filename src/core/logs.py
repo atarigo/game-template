@@ -28,7 +28,8 @@ def configure(level: int = logging.DEBUG) -> None:
                     structlog.processors.CallsiteParameter.LINENO,
                 ],
             ),
-            format_callsite,
+            # Disable callsite for now, cause we use decorators to handle exceptions
+            # format_callsite,
             structlog.processors.StackInfoRenderer(),
             structlog.dev.set_exc_info,
             structlog.processors.TimeStamper(fmt="%Y-%m-%d %H:%M:%S", utc=False),
