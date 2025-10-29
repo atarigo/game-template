@@ -1,27 +1,12 @@
-from enum import Enum
-
 import pygame
 import structlog
 
 from .core.events import EventManager
+from .core.scenes import SceneManager, SceneState
 from .setup.config import Settings
+from .state import GameState, GameStateManager
 
 logger = structlog.get_logger(__name__)
-
-
-class GameState(Enum):
-    Running = "GameRunning"
-    Quitting = "GameQuitting"
-
-
-class GameStateManager:
-    def __init__(self, events: EventManager):
-        self.current: GameState = GameState.Running
-
-        events.subscribe(GameState.Quitting, self.game_quit_handler)
-
-    def game_quit_handler(self, *args, **kwargs):
-        self.current = GameState.Quitting
 
 
 class Game:
@@ -31,6 +16,10 @@ class Game:
 
         # managers
         self.state = GameStateManager(events=self.events)
+
+        self.scene = SceneManager(events=self.events)
+        register_scenes(scene_manager=self.scene)
+        self.events.emit(SceneState.SwitchTo, {"scene_name": "landing"})
 
         # initialize pygame
         logger.info("Game initialized")
@@ -60,13 +49,22 @@ class Game:
                 self.events.emit(GameState.Quitting)
 
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_ESCAPE:
-                    self.events.emit(GameState.Quitting)
+                self.scene.handle_event(keydown=event)
 
     def update(self, dt: float):
         self.events.process_events()
+        self.scene.update(dt)
 
     def draw(self):
         self.screen.fill((0, 0, 0))
 
+        self.scene.draw(self.screen)
+
         pygame.display.flip()
+
+
+def register_scenes(scene_manager: SceneManager):
+    from src.scenes import CityScene, LandingScene
+
+    scene_manager.register("landing", LandingScene)
+    scene_manager.register("city", CityScene)
