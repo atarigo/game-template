@@ -1,16 +1,4 @@
-import logging
-
-from src.core.game import Game, Settings
-from src.core.logs import configure
-
-
-def main():
-    settings = Settings()
-    configure(logging.DEBUG)
-
-    game = Game(settings)
-    game.run()
-
+from src.main import launch
 
 if __name__ == "__main__":
-    main()
+    launch()
