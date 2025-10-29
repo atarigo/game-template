@@ -2,7 +2,9 @@ import pygame
 import structlog
 
 from src.core.events import EventManager
-from src.core.scenes import Scene, SceneState
+from src.state import SceneState
+
+from .base import Scene
 
 logger = structlog.get_logger(__name__)
 

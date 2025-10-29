@@ -17,7 +17,6 @@ class Game:
         self.scenes = scenes
 
         self.state = GameStateManager(events=events)
-        self.events.emit(SceneState.SwitchTo, {"scene_name": "landing"})
 
         # initialize pygame
         logger.info("Game initialized")
@@ -27,6 +26,7 @@ class Game:
 
         self.screen = pygame.display.get_surface()
         self.clock = pygame.time.Clock()
+        self.events.emit(SceneState.SwitchTo, {"scene_name": "landing"})
 
     def __del__(self):
         logger.info("Game destroyed")
