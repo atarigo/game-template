@@ -1,6 +1,10 @@
 import logging
+from functools import wraps
+from typing import Callable
 
 import structlog
+
+logger = structlog.get_logger(__name__)
 
 
 def format_callsite(logger, method_name, event_dict: dict) -> dict:
@@ -45,3 +49,12 @@ def configure(level: int = logging.DEBUG) -> None:
         logger_factory=structlog.PrintLoggerFactory(),
         cache_logger_on_first_use=False,
     )
+
+
+def called(func: Callable):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        logger.debug("[Calling]", callsite=func.__qualname__)
+        return func(*args, **kwargs)
+
+    return wrapper

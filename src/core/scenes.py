@@ -5,6 +5,7 @@ import pygame
 from src.state import SceneState
 
 from .events import EventManager
+from .logs import called
 
 
 class Scene:
@@ -39,6 +40,7 @@ class SceneManager:
     def register(self, name: str, scene: Type[Scene]):
         self._scenes[name] = scene
 
+    @called
     def switch_to(self, data: dict):
         scene_name = data.get("scene_name")
         if next_scene := self._scenes.get(scene_name, None):
