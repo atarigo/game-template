@@ -1,10 +1,11 @@
 import logging
 
 from .core.events import EventManager
-from .core.game import Game, Settings
+from .core.game import Game
 from .core.logs import configure
 from .core.scenes import SceneManager
 from .scenes import CityScene, LandingScene
+from .setup.config import Settings
 
 
 def launch():

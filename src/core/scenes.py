@@ -1,22 +1,23 @@
-from typing import Type
+from typing import TYPE_CHECKING
 
 import pygame
 
-from src.scenes.base import Scene
 from src.state import SceneStateManager
 
-from .events import EventManager
+if TYPE_CHECKING:
+    from src.core.events import EventManager
+    from src.scenes.base import Scene
 
 
 class SceneManager:
-    def __init__(self, events: EventManager):
+    def __init__(self, events: "EventManager"):
         self.state = SceneStateManager(events=events)
 
     @property
-    def current(self) -> Scene | None:
+    def current(self) -> "Scene":
         return self.state.current
 
-    def register(self, name: str, scene: Type[Scene]):
+    def register(self, name: str, scene: type["Scene"]):
         self.state.add_scene(name, scene)
 
     def handle_event(self, keydown: pygame.event.Event):

@@ -1,7 +1,10 @@
 from enum import Enum
+from typing import TYPE_CHECKING
 
-from src.core.events import EventManager
 from src.core.logs import called
+
+if TYPE_CHECKING:
+    from src.core.events import EventManager
 
 
 class GameState(Enum):
@@ -10,7 +13,7 @@ class GameState(Enum):
 
 
 class GameStateManager:
-    def __init__(self, events: EventManager):
+    def __init__(self, events: "EventManager"):
         self.current: GameState = GameState.Running
 
         events.subscribe(GameState.Quitting, self.game_quit_handler)
