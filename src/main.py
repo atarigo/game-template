@@ -39,6 +39,7 @@ class Game:
         pygame.display.set_caption(settings.window.title)
 
         self.screen = pygame.display.get_surface()
+        self.clock = pygame.time.Clock()
 
     def __del__(self):
         logger.info("Game destroyed")
@@ -47,8 +48,10 @@ class Game:
 
     def run(self):
         while self.state.current == GameState.Running:
+            dt = self.clock.tick(60) / 1000  # seconds
+
             self.handle_events()
-            self.update()
+            self.update(dt)
             self.draw()
 
     def handle_events(self):
@@ -60,7 +63,7 @@ class Game:
                 if event.key == pygame.K_ESCAPE:
                     self.events.emit(GameState.Quitting)
 
-    def update(self):
+    def update(self, dt: float):
         self.events.process_events()
 
     def draw(self):
