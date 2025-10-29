@@ -3,12 +3,12 @@ from typing import TYPE_CHECKING
 import pygame
 import structlog
 
-from src.scenes.events import SceneEvent
+from src.plugins.scene import SceneEvent
 from src.state import GameState, GameStateManager
 
 if TYPE_CHECKING:
     from src.core.events import EventManager
-    from src.scenes.manager import SceneManager
+    from src.plugins.scene import SceneManager
     from src.setup.config import Settings
 
 

@@ -3,7 +3,8 @@ import logging
 from .core.events import EventManager
 from .core.game import Game
 from .core.logs import configure
-from .scenes import CityScene, LandingScene, SceneManager
+from .plugins.scene import SceneManager
+from .scenes import CityScene, LandingScene
 from .setup.config import Settings
 
 

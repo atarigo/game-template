@@ -4,14 +4,16 @@ import pygame
 import structlog
 
 from src.core.logs import called
-from src.scenes.events import SceneEvent
-from src.scenes.lifecycle import SceneLifecycle
-from src.scenes.registry import SceneRegistry
-from src.scenes.stack import SceneStack
+
+from .events import SceneEvent
+from .lifecycle import SceneLifecycle
+from .registry import SceneRegistry
+from .stack import SceneStack
 
 if TYPE_CHECKING:
     from src.core.events import EventManager
-    from src.scenes.base import Scene
+
+    from .base import Scene
 
 logger = structlog.get_logger(__name__)
 
