@@ -13,7 +13,8 @@ def exception_handler(*exceptions: Type[Exception]):
             try:
                 return func(*args, **kwargs)
             except exceptions:
-                logger.exception("Exception raised", exc_info=True)
+                logger.exception("Raising exception", exc_info=True)
+                raise
 
         return wrapper
 
