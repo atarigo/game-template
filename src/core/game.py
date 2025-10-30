@@ -56,7 +56,7 @@ class Game:
                 self.events.emit(GameState.Quitting)
 
             if event.type == pygame.KEYDOWN:
-                self.scenes.handle_event(keydown=event)
+                self.scenes.handle_event(event=event)
 
     def update(self, dt: float):
         self.events.process_events()

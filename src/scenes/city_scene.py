@@ -2,7 +2,7 @@ import pygame
 import structlog
 
 from src.core.events import EventManager
-from src.plugins.scene import Scene, SceneEvent
+from src.plugins.scene import SceneBase, SceneEvent
 
 logger = structlog.get_logger(__name__)
 
@@ -17,7 +17,7 @@ class UI:
             and self.__class__.__name__ == other.__class__.__name__
         )
 
-    def handle_event(self, keydown: pygame.event.Event):
+    def onkeydown(self, keydown: pygame.event.Event):
         pass
 
     def update(self, dt: float):
@@ -39,7 +39,7 @@ class InventoryPanel(UI):
 
         self.events = events
 
-    def handle_event(self, keydown: pygame.event.Event):
+    def onkeydown(self, keydown: pygame.event.Event):
         if keydown.key == pygame.K_u:
             logger.info("use item")
 
@@ -59,11 +59,11 @@ class CharacterUI(UI):
         pygame.draw.rect(screen, Color.C, window)
 
 
-class StoreScene(Scene):
+class StoreScene(SceneBase):
     def __init__(self, events: EventManager):
         super().__init__(events=events)
 
-    def handle_event(self, keydown: pygame.event.Event):
+    def onkeydown(self, keydown: pygame.event.Event):
         if keydown.key == pygame.K_ESCAPE:
             self.events.emit("pop", {"scene": "store"})
 
@@ -75,13 +75,13 @@ class StoreScene(Scene):
         screen.blit(title, title_rect)
 
 
-class CityScene(Scene):
+class CityScene(SceneBase):
     def __init__(self, events: EventManager):
         super().__init__(events=events)
 
         self.UIs: set[UI] = set()
 
-        self.children: list[Scene] = []
+        self.children: list[SceneBase] = []
 
         self.pause = False
 
@@ -122,15 +122,15 @@ class CityScene(Scene):
         else:
             self.UIs.add(new_ui)
 
-    def handle_event(self, keydown: pygame.event.Event):
+    def onkeydown(self, keydown: pygame.event.Event):
         for child in self.children:
-            child.handle_event(keydown)
+            child.onkeydown(keydown)
 
         if self.pause:
             return
 
         for ui in self.UIs:
-            ui.handle_event(keydown)
+            ui.onkeydown(keydown)
 
         if keydown.key == pygame.K_i:
             self.events.emit("toggle", {"ui": "item"})

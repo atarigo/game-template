@@ -94,10 +94,10 @@ class SceneManager:
             self.lifecycle.pop(exiting_scene, previous_scene)
             logger.info("Scene popped", scene=exiting_scene.__class__.__name__)
 
-    def handle_event(self, keydown: pygame.event.Event):
+    def handle_event(self, event: pygame.event.Event):
         """Forward event to current scene"""
         if scene := self.current:
-            scene.handle_event(keydown=keydown)
+            scene.handle_event(event)
 
     def update(self, dt: float):
         """Forward update to current scene"""
