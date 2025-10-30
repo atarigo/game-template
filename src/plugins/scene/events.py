@@ -1,9 +1,21 @@
 from enum import Enum
+from typing import TypedDict
 
 
-class SceneEvent(str, Enum):
-    """Scene transition event types"""
+class SceneEvent(Enum):
+    SwitchTo = "SwitchTo"
+    Append = "Append"
+    Pop = "Pop"
 
-    SWITCH_TO = "scene.switch_to"
-    PUSH = "scene.push"
-    POP = "scene.pop"
+
+class UIEvents(Enum):
+    Toggle = "Toggle"
+    Pop = "Pop"
+
+
+class SceneEventData(TypedDict):
+    name: str
+
+
+class UIEventData(TypedDict):
+    name: str

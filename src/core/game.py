@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING
 import pygame
 import structlog
 
-from src.plugins.scene import SceneEvent
+from src.plugins.scene import SceneEvent, SceneEventData
 from src.state import GameState, GameStateManager
 
 if TYPE_CHECKING:
@@ -17,11 +17,14 @@ logger = structlog.get_logger(__name__)
 
 class Game:
     def __init__(
-        self, settings: "Settings", events: "EventManager", scenes: "SceneManager"
+        self,
+        settings: "Settings",
+        events: "EventManager",
+        scene_manager: "SceneManager",
     ):
         self.settings = settings
         self.events = events
-        self.scenes = scenes
+        self.scene_manager = scene_manager
 
         self.state = GameStateManager(events=events)
 
@@ -35,7 +38,7 @@ class Game:
         self.clock = pygame.time.Clock()
 
         # Initialize first scene
-        self.events.emit(SceneEvent.SWITCH_TO, {"scene": "landing"})
+        self.events.emit(SceneEvent.SwitchTo, SceneEventData(name="landing"))
 
     def __del__(self):
         logger.info("Game destroyed")
@@ -55,16 +58,15 @@ class Game:
             if event.type == pygame.QUIT:
                 self.events.emit(GameState.Quitting)
 
-            if event.type == pygame.KEYDOWN:
-                self.scenes.handle_event(keydown=event)
+            self.scene_manager.handle_event(event=event)
 
     def update(self, dt: float):
         self.events.process_events()
-        self.scenes.update(dt)
+        self.scene_manager.update(dt)
 
     def draw(self):
         self.screen.fill((0, 0, 0))
 
-        self.scenes.draw(self.screen)
+        self.scene_manager.draw(self.screen)
 
         pygame.display.flip()

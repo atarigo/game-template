@@ -2,39 +2,84 @@ import pygame
 import structlog
 
 from src.core.events import EventManager
-from src.plugins.scene import Scene, SceneEvent
+from src.plugins.scene import (
+    SceneBase,
+    SceneEvent,
+    SceneEventData,
+    UIBase,
+    UIEventData,
+    UIEvents,
+    UIManager,
+)
 
 logger = structlog.get_logger(__name__)
 
 
-class CityScene(Scene):
+class Color:
+    White = (255, 255, 255)
+    Black = (0, 0, 0)
+    C = (0, 100, 100)
+
+
+class InventoryPanel(UIBase):
     def __init__(self, events: EventManager):
         super().__init__(events=events)
 
-    def on_enter(self):
-        logger.info("CityScene on_enter")
-
-        logger.debug("world initialized")
-        logger.debug("user entity created")
-
-    def on_exit(self):
-        logger.info("enter to whatever scene")
-
-    def handle_event(self, keydown: pygame.event.Event):
-        if keydown.key == pygame.K_UP:
-            logger.info("move up")
-        elif keydown.key == pygame.K_DOWN:
-            logger.info("move down")
-        elif keydown.key == pygame.K_LEFT:
-            logger.info("move left")
-        elif keydown.key == pygame.K_RIGHT:
-            logger.info("move right")
-        elif keydown.key == pygame.K_ESCAPE:
-            self.events.emit(SceneEvent.SWITCH_TO, {"scene": "landing"})
+    def onkeydown(self, keydown: pygame.event.Event):
+        if keydown.key == pygame.K_u:
+            logger.info("use item")
 
     def draw(self, screen: pygame.Surface):
+        window = pygame.Rect((300, 300), (400, 300))
+        pygame.draw.rect(screen, Color.White, window)
+
+
+class CharacterPanel(UIBase):
+    def __init__(self, events: EventManager):
+        super().__init__(events=events)
+
+    def draw(self, screen: pygame.Surface):
+        window = pygame.Rect((100, 300), (100, 300))
+        pygame.draw.rect(screen, Color.C, window)
+
+
+class CityScene(SceneBase):
+    def __init__(self, events: EventManager):
+        super().__init__(events=events)
+
+        self.ui_manager = UIManager(events=self.events)
+        self.ui_manager.register("inventory", InventoryPanel)
+        self.ui_manager.register("character", CharacterPanel)
+
+        self.pause = False
+
+    def onkeydown(self, keydown: pygame.event.Event):
+        if self.pause:
+            return
+
+        self.ui_manager.handle_event(event=keydown)
+
+        if keydown.key == pygame.K_i:
+            self.events.emit(UIEvents.Toggle, UIEventData(name="inventory"))
+        elif keydown.key == pygame.K_c:
+            self.events.emit(UIEvents.Toggle, UIEventData(name="character"))
+        elif keydown.key == pygame.K_f:
+            # todo: delete it, this is a fake event for testing
+            self.events.emit(SceneEvent.Append, SceneEventData(name="store"))
+        elif keydown.key == pygame.K_ESCAPE:
+            if self.ui_manager.children:
+                self.events.emit(UIEvents.Pop, None)
+            else:
+                self.events.emit(SceneEvent.SwitchTo, SceneEventData(name="landing"))
+
+    def draw(self, screen: pygame.Surface):
+        if self.pause:
+            return
+
         # title
         font = pygame.font.Font(None, 72)
         title = font.render("City", True, (255, 255, 255))
         title_rect = title.get_rect(center=(screen.get_width() // 2, 150))
         screen.blit(title, title_rect)
+
+        self.ui_manager.draw(screen)

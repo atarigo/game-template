@@ -1,29 +1,45 @@
 import pygame
+import structlog
 
 from src.core.events import EventManager
 
+from ..core import GameObject
 
-class Scene:
+logger = structlog.get_logger(__name__)
+
+
+class SceneBase(GameObject):
     def __init__(self, events: EventManager):
-        self.events: EventManager = events
+        super().__init__()
 
-    def on_enter(self):
+        self.events = events
+
+    def onkeydown(self, keydown: pygame.event.Event):
         pass
 
-    def on_exit(self):
+    def handle_event(self, event: pygame.event.Event):
+        if event.type == pygame.KEYDOWN:
+            self.onkeydown(event)
+
+
+class UIBase(GameObject):
+    def __init__(self, events: EventManager):
+        super().__init__()
+
+        self.events = events
+
+    def onkeydown(self, keydown: pygame.event.Event):
         pass
 
-    def on_pause(self):
-        pass
+    def handle_event(self, event: pygame.event.Event):
+        if event.type == pygame.KEYDOWN:
+            self.onkeydown(event)
 
-    def on_resume(self):
-        pass
+    def __hash__(self):
+        return hash(self.__class__.__name__)
 
-    def handle_event(self, keydown: pygame.event.Event):
-        pass
-
-    def update(self, dt: float):
-        pass
-
-    def draw(self, screen: pygame.Surface):
-        pass
+    def __eq__(self, other):
+        return (
+            isinstance(other, UIBase)
+            and self.__class__.__name__ == other.__class__.__name__
+        )
