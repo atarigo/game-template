@@ -11,6 +11,8 @@ from src.plugins.scene import (
     UIEventData,
     UIManager,
 )
+from src.plugins.system import RenderSystem
+from src.worlds import CityLevel1World
 
 logger = structlog.get_logger(__name__)
 
@@ -51,6 +53,12 @@ class CityScene(SceneBase):
         self.ui_manager.register("inventory", InventoryPanel)
         self.ui_manager.register("character", CharacterPanel)
 
+        self.world = CityLevel1World()
+
+        self.systems = [
+            RenderSystem(),
+        ]
+
         self.pause = False
 
     def onkeydown(self, keydown: pygame.event.Event):
@@ -72,7 +80,14 @@ class CityScene(SceneBase):
             else:
                 self.events.emit(SceneEvent.SwitchTo, SceneEventData(name="landing"))
 
+    def update(self, dt: float):
+        for system in self.systems:
+            system.update(dt)
+
     def draw(self, screen: pygame.Surface):
+        for system in self.systems:
+            system.draw(screen, self.world.manager)
+
         if self.pause:
             return
 
