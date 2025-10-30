@@ -8,7 +8,7 @@ class SceneEvent(Enum):
     Pop = "Pop"
 
 
-class UIEvents(Enum):
+class UIEvent(Enum):
     Toggle = "Toggle"
     Pop = "Pop"
 

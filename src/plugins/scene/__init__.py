@@ -1,5 +1,5 @@
 from .base import SceneBase, UIBase
-from .events import SceneEvent, SceneEventData, UIEventData, UIEvents
+from .events import SceneEvent, SceneEventData, UIEvent, UIEventData
 from .manager import SceneManager, UIManager
 
 __all__ = [
@@ -9,6 +9,6 @@ __all__ = [
     "SceneManager",
     "UIBase",
     "UIManager",
-    "UIEvents",
+    "UIEvent",
     "UIEventData",
 ]

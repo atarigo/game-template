@@ -1,9 +1,9 @@
 import pygame
 import structlog
 
-from src.core.events import EventManager
+from src.plugins.client import GameEvent
+from src.plugins.event import EventManager
 from src.plugins.scene import SceneBase, SceneEvent, SceneEventData
-from src.state import GameState
 
 logger = structlog.get_logger(__name__)
 
@@ -21,12 +21,12 @@ class LandingScene(SceneBase):
         elif keydown.key == pygame.K_DOWN:
             self.selected = (self.selected + 1) % len(self.options)
         elif keydown.key == pygame.K_ESCAPE:
-            self.events.emit(GameState.Quitting)
+            self.events.emit(GameEvent.Quitting)
         elif keydown.key == pygame.K_RETURN:
             if self.selected == 0:
                 self.events.emit(SceneEvent.SwitchTo, SceneEventData(name="city"))
             elif self.selected == 1:
-                self.events.emit(GameState.Quitting)
+                self.events.emit(GameEvent.Quitting)
 
     def draw(self, screen: pygame.Surface):
         # title

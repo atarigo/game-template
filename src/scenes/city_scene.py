@@ -1,14 +1,14 @@
 import pygame
 import structlog
 
-from src.core.events import EventManager
+from src.plugins.event import EventManager
 from src.plugins.scene import (
     SceneBase,
     SceneEvent,
     SceneEventData,
     UIBase,
+    UIEvent,
     UIEventData,
-    UIEvents,
     UIManager,
 )
 
@@ -60,15 +60,15 @@ class CityScene(SceneBase):
         self.ui_manager.handle_event(event=keydown)
 
         if keydown.key == pygame.K_i:
-            self.events.emit(UIEvents.Toggle, UIEventData(name="inventory"))
+            self.events.emit(UIEvent.Toggle, UIEventData(name="inventory"))
         elif keydown.key == pygame.K_c:
-            self.events.emit(UIEvents.Toggle, UIEventData(name="character"))
+            self.events.emit(UIEvent.Toggle, UIEventData(name="character"))
         elif keydown.key == pygame.K_f:
             # todo: delete it, this is a fake event for testing
             self.events.emit(SceneEvent.Append, SceneEventData(name="store"))
         elif keydown.key == pygame.K_ESCAPE:
             if self.ui_manager.children:
-                self.events.emit(UIEvents.Pop, None)
+                self.events.emit(UIEvent.Pop, None)
             else:
                 self.events.emit(SceneEvent.SwitchTo, SceneEventData(name="landing"))
 

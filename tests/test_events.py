@@ -36,7 +36,7 @@ Edge Cases:
 
 import pytest
 
-from src.core.events import EventManager
+from src.plugins.event import EventManager
 
 
 def test_subscribe_and_emit():

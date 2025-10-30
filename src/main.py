@@ -1,8 +1,8 @@
 import logging
 
-from .core.events import EventManager
-from .core.game import Game
-from .core.logs import configure
+from .plugins.client import Game
+from .plugins.core.logs import configure
+from .plugins.event import EventManager
 from .plugins.scene import SceneManager
 from .scenes import CityScene, LandingScene, StoreScene
 from .setup.config import Settings

@@ -1,9 +1,8 @@
 import pygame
 import structlog
 
-from src.core.events import EventManager
-
 from ..core import GameObject
+from ..event import EventManager
 
 logger = structlog.get_logger(__name__)
 

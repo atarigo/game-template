@@ -3,9 +3,8 @@ from typing import TYPE_CHECKING
 import structlog
 
 if TYPE_CHECKING:
-    from src.core.events import EventManager
-
-    from .base import GameObject
+    from ..core import GameObject
+    from ..event import EventManager
 
 
 logger = structlog.get_logger(__name__)

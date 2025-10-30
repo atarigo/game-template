@@ -4,7 +4,7 @@ from typing import Any, Callable
 import orjson
 import structlog
 
-from .exceptions import exception_handler
+from ..core.exceptions import exception_handler
 
 logger = structlog.get_logger(__name__)
 

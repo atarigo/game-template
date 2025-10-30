@@ -3,13 +3,12 @@ from typing import TYPE_CHECKING
 import pygame
 import structlog
 
-from .events import SceneEvent, SceneEventData, UIEventData, UIEvents
+from .events import SceneEvent, SceneEventData, UIEvent, UIEventData
 from .registry import Registry
 
 if TYPE_CHECKING:
-    from src.core.events import EventManager
-
-    from .base import GameObject
+    from ..core import GameObject
+    from ..event import EventManager
 
 
 logger = structlog.get_logger(__name__)
@@ -41,8 +40,8 @@ class UIManager(Manager):
     def __init__(self, events: "EventManager"):
         super().__init__(events=events)
 
-        self.events.subscribe(UIEvents.Toggle, self._toggle)
-        self.events.subscribe(UIEvents.Pop, self._pop)
+        self.events.subscribe(UIEvent.Toggle, self._toggle)
+        self.events.subscribe(UIEvent.Pop, self._pop)
 
     def _toggle(self, data: UIEventData):
         new_ui = self.registry.create(name=data["name"], events=self.events)

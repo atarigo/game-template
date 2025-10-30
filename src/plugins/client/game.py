@@ -4,10 +4,11 @@ import pygame
 import structlog
 
 from src.plugins.scene import SceneEvent, SceneEventData
-from src.state import GameState, GameStateManager
+
+from .events import GameEvent, GameStateManager
 
 if TYPE_CHECKING:
-    from src.core.events import EventManager
+    from src.plugins.event import EventManager
     from src.plugins.scene import SceneManager
     from src.setup.config import Settings
 
@@ -46,7 +47,7 @@ class Game:
         pygame.quit()
 
     def run(self):
-        while self.state.current == GameState.Running:
+        while self.state.current == GameEvent.Running:
             dt = self.clock.tick(60) / 1000  # seconds
 
             self.handle_events()
@@ -56,7 +57,7 @@ class Game:
     def handle_events(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                self.events.emit(GameState.Quitting)
+                self.events.emit(GameEvent.Quitting)
 
             self.scene_manager.handle_event(event=event)
 
