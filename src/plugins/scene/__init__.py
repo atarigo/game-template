@@ -1,13 +1,14 @@
-from .base import Scene
-from .events import SceneEvent
-from .manager import SceneManager
-from .registry import SceneRegistry
-from .stack import SceneStack
+from .base import SceneBase, UIBase
+from .events import SceneEvent, SceneEventData, UIEventData, UIEvents
+from .manager import SceneManager, UIManager
 
 __all__ = [
-    "Scene",
+    "SceneBase",
     "SceneEvent",
+    "SceneEventData",
     "SceneManager",
-    "SceneRegistry",
-    "SceneStack",
+    "UIBase",
+    "UIManager",
+    "UIEvents",
+    "UIEventData",
 ]
