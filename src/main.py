@@ -4,7 +4,7 @@ from .core.events import EventManager
 from .core.game import Game
 from .core.logs import configure
 from .plugins.scene import SceneManager
-from .scenes import CityScene, LandingScene
+from .scenes import CityScene, LandingScene, StoreScene
 from .setup.config import Settings
 
 
@@ -17,6 +17,7 @@ def launch():
     scenes = SceneManager(events=events)
     scenes.register("landing", LandingScene)
     scenes.register("city", CityScene)
+    scenes.register("store", StoreScene)
 
     game = Game(settings, events, scenes)
     game.run()

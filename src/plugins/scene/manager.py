@@ -3,108 +3,80 @@ from typing import TYPE_CHECKING
 import pygame
 import structlog
 
-from src.core.logs import called
-
-from .events import SceneEvent
-from .lifecycle import SceneLifecycle
-from .registry import SceneRegistry
-from .stack import SceneStack
+from .events import SceneEvent, SceneEventData, UIEventData, UIEvents
+from .registry import Registry
 
 if TYPE_CHECKING:
     from src.core.events import EventManager
 
-    from .base import Scene
+    from .base import GameObject
+
 
 logger = structlog.get_logger(__name__)
 
 
-class SceneManager:
-    """Facade for scene system - coordinates registry, stack, and lifecycle"""
-
+class Manager:
     def __init__(self, events: "EventManager"):
         self.events = events
-        self.registry = SceneRegistry(events)
-        self.stack = SceneStack()
-        self.lifecycle = SceneLifecycle()
+        self.registry = Registry()
+        self.children: list["GameObject"] = list()
 
-        # Subscribe to scene transition events
-        events.subscribe(SceneEvent.SWITCH_TO, self._on_switch_to)
-        events.subscribe(SceneEvent.PUSH, self._on_push)
-        events.subscribe(SceneEvent.POP, self._on_pop)
-
-    @property
-    def current(self) -> "Scene | None":
-        """Get the current active scene"""
-        return self.stack.peek()
-
-    def register(self, name: str, scene_class: type["Scene"]):
-        """Register a scene class"""
-        self.registry.register(name, scene_class)
-
-    @called
-    def _on_switch_to(self, data: dict):
-        """Handle SWITCH_TO event - replace entire stack with new scene"""
-        scene_name = data.get("scene")
-        if not scene_name:
-            logger.error("SWITCH_TO event missing 'scene' parameter", data=data)
-            return
-
-        try:
-            new_scene = self.registry.create(scene_name)
-            old_scene = self.stack.peek()
-
-            self.lifecycle.switch(old_scene, new_scene)
-            self.stack.clear()
-            self.stack.push(new_scene)
-
-            logger.info("Scene switched", scene=scene_name)
-        except ValueError as e:
-            logger.error("Failed to switch scene", error=str(e), scene=scene_name)
-
-    @called
-    def _on_push(self, data: dict):
-        """Handle PUSH event - push new scene onto stack"""
-        scene_name = data.get("scene")
-        if not scene_name:
-            logger.error("PUSH event missing 'scene' parameter", data=data)
-            return
-
-        try:
-            new_scene = self.registry.create(scene_name)
-            current_scene = self.stack.peek()
-
-            self.lifecycle.push(current_scene, new_scene)
-            self.stack.push(new_scene)
-
-            logger.info("Scene pushed", scene=scene_name)
-        except ValueError as e:
-            logger.error("Failed to push scene", error=str(e), scene=scene_name)
-
-    @called
-    def _on_pop(self, data: dict | None):
-        """Handle POP event - pop current scene from stack"""
-        if self.stack.is_empty():
-            logger.warning("Cannot pop from empty scene stack")
-            return
-
-        exiting_scene = self.stack.pop()
-        previous_scene = self.stack.peek()
-
-        if exiting_scene:
-            self.lifecycle.pop(exiting_scene, previous_scene)
-            logger.info("Scene popped", scene=exiting_scene.__class__.__name__)
+    def register(self, name: str, obj_class: type["GameObject"]):
+        self.registry.register(name, obj_class)
 
     def handle_event(self, event: pygame.event.Event):
-        """Forward event to current scene"""
-        if scene := self.current:
-            scene.handle_event(event)
+        for child in self.children:
+            child.handle_event(event)
 
     def update(self, dt: float):
-        """Forward update to current scene"""
-        if scene := self.current:
-            scene.update(dt)
+        for child in self.children:
+            child.update(dt)
 
     def draw(self, screen: pygame.Surface):
-        """Forward draw to current scene"""
-        if scene := self.current:
-            scene.draw(screen)
+        for child in self.children:
+            child.draw(screen)
+
+
+class UIManager(Manager):
+    def __init__(self, events: "EventManager"):
+        super().__init__(events=events)
+
+        self.events.subscribe(UIEvents.Toggle, self._toggle)
+        self.events.subscribe(UIEvents.Pop, self._pop)
+
+    def _toggle(self, data: UIEventData):
+        new_ui = self.registry.create(name=data["name"], events=self.events)
+
+        if new_ui in self.children:
+            self.children.remove(new_ui)
+        else:
+            self.children.append(new_ui)
+
+    def _pop(self, data: UIEventData):
+        if self.children:
+            self.children.pop()
+
+
+class SceneManager(Manager):
+    def __init__(self, events: "EventManager"):
+        super().__init__(events=events)
+
+        self.events.subscribe(SceneEvent.SwitchTo, self._switch_to)
+        self.events.subscribe(SceneEvent.Append, self._append)
+        self.events.subscribe(SceneEvent.Pop, self._pop)
+
+    def _switch_to(self, data: SceneEventData):
+        next_scene = self.registry.create(data["name"], self.events)
+        self.children.clear()
+        self.children.append(next_scene)
+
+    def _append(self, data: SceneEventData):
+        overlay_scene = self.registry.create(data["name"], self.events)
+        for child in self.children:
+            child.pause = True
+        self.children.append(overlay_scene)
+
+    def _pop(self, data: SceneEventData):
+        if self.children:
+            self.children.pop()
+        self.children[-1].pause = False

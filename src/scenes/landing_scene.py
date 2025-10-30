@@ -2,7 +2,7 @@ import pygame
 import structlog
 
 from src.core.events import EventManager
-from src.plugins.scene import SceneBase, SceneEvent
+from src.plugins.scene import SceneBase, SceneEvent, SceneEventData
 from src.state import GameState
 
 logger = structlog.get_logger(__name__)
@@ -15,12 +15,6 @@ class LandingScene(SceneBase):
         self.selected: int = 0
         self.options: list[str] = ["New Game", "Quit"]
 
-    def on_enter(self):
-        self.selected = 0
-
-    def on_exit(self):
-        logger.info("exit to landing scene")
-
     def onkeydown(self, keydown: pygame.event.Event):
         if keydown.key == pygame.K_UP:
             self.selected = (self.selected - 1) % len(self.options)
@@ -30,7 +24,7 @@ class LandingScene(SceneBase):
             self.events.emit(GameState.Quitting)
         elif keydown.key == pygame.K_RETURN:
             if self.selected == 0:
-                self.events.emit(SceneEvent.SWITCH_TO, {"scene": "city"})
+                self.events.emit(SceneEvent.SwitchTo, SceneEventData(name="city"))
             elif self.selected == 1:
                 self.events.emit(GameState.Quitting)
 
