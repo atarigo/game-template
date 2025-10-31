@@ -1,13 +1,14 @@
 import pygame
 
-from src.plugins.component import Position, Sprite
+from src.plugins.component import NameLabel, Position, Sprite
 from src.plugins.world import WorldManager
 
 
-def create_player(manager: WorldManager, x: int, y: int):
+def create_player(manager: WorldManager, x: int, y: int, name: str = "player"):
     player = manager.create_entity()
 
     manager.add_component(player, Position(x, y))
+    manager.add_component(player, NameLabel(name))
 
     image = pygame.Surface((50, 50))
     image.fill((0, 255, 0))
@@ -16,10 +17,11 @@ def create_player(manager: WorldManager, x: int, y: int):
     return player
 
 
-def create_door(manager: WorldManager, x: int, y: int):
+def create_door(manager: WorldManager, x: int, y: int, name: str = "door"):
     door = manager.create_entity()
 
     manager.add_component(door, Position(x, y))
+    manager.add_component(door, NameLabel(name))
 
     image = pygame.Surface((50, 50))
     image.fill((255, 0, 0))
@@ -32,4 +34,4 @@ class CityLevel1World:
         self.manager = WorldManager()
 
         self.player = create_player(self.manager, x=100, y=100)
-        self.door = create_door(self.manager, x=200, y=200)
+        self.door = create_door(self.manager, x=200, y=400, name="store")
