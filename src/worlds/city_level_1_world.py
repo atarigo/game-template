@@ -54,5 +54,6 @@ class CityLevel1World:
         self.manager = WorldManager()
 
         self.player = create_player(self.manager, x=100, y=100)
+
         self.door = create_door(self.manager, x=200, y=400, name="store")
         self.portal = create_door(self.manager, x=300, y=400, name="intstance")
