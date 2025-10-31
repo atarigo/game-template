@@ -6,15 +6,10 @@ from ..world import WorldManager
 
 
 class PlayerControlSystem(GameObject):
-    def onkeydown(self, keydown: pygame.event.Event, world: WorldManager):
-        pass
-
-    def handle_event(self, event: pygame.event.Event, world: WorldManager):
+    def update(self, dt: float, world: WorldManager):
         keys = pygame.key.get_pressed()
 
         for entity_id in world.get_entities_with(PlayerTag, Velocity):
-            velocity = world.get_component(entity_id, Velocity)
-
             dx = dy = 0
             if keys[pygame.K_LEFT] or keys[pygame.K_a]:
                 dx = -1
@@ -30,5 +25,6 @@ class PlayerControlSystem(GameObject):
                 dx = dx / magnitude
                 dy = dy / magnitude
 
-                velocity.dx = dx
-                velocity.dy = dy
+            velocity = world.get_component(entity_id, Velocity)
+            velocity.dx = dx
+            velocity.dy = dy

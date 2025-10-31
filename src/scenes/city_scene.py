@@ -82,12 +82,6 @@ class CityScene(SceneBase):
             else:
                 self.events.emit(SceneEvent.SwitchTo, SceneEventData(name="landing"))
 
-    def handle_event(self, event: pygame.event.Event):
-        for system in self.systems:
-            system.handle_event(event, self.world.manager)
-
-        super().handle_event(event)
-
     def update(self, dt: float):
         for system in self.systems:
             system.update(dt, self.world.manager)

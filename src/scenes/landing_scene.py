@@ -13,7 +13,7 @@ class LandingScene(SceneBase):
         super().__init__(events=events)
 
         self.selected: int = 0
-        self.options: list[str] = ["New Game", "Quit"]
+        self.options: list[str] = ["New Game", "Playground", "Quit"]
 
     def onkeydown(self, keydown: pygame.event.Event):
         if keydown.key == pygame.K_UP:
@@ -26,6 +26,8 @@ class LandingScene(SceneBase):
             if self.selected == 0:
                 self.events.emit(SceneEvent.SwitchTo, SceneEventData(name="city"))
             elif self.selected == 1:
+                self.events.emit(SceneEvent.SwitchTo, SceneEventData(name="playground"))
+            elif self.selected == 2:
                 self.events.emit(GameEvent.Quitting)
 
     def draw(self, screen: pygame.Surface):
