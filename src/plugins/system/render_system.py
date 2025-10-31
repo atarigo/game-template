@@ -7,6 +7,7 @@ from ..world import WorldManager
 
 class RenderSystem(GameObject):
     def __init__(self):
+        super().__init__()
         self.lable_font = pygame.font.Font(None, 24)
 
     def draw(self, screen: pygame.Surface, world: WorldManager) -> None:

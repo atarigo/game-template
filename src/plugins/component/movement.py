@@ -11,3 +11,8 @@ class Position:
 class Velocity:
     dx: float
     dy: float
+
+
+@dataclass
+class Collision:
+    radius: float

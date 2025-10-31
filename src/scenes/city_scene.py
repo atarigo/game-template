@@ -84,7 +84,7 @@ class CityScene(SceneBase):
 
     def update(self, dt: float):
         for system in self.systems:
-            system.update(dt, self.world.manager)
+            system.update(dt, self.events, self.world.manager)
 
     def draw(self, screen: pygame.Surface):
         for system in self.systems:

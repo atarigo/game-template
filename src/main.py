@@ -4,7 +4,7 @@ from .plugins.client import Game
 from .plugins.core.logs import configure
 from .plugins.event import EventManager
 from .plugins.scene import SceneManager
-from .scenes import CityScene, LandingScene, PlaygroundScene, StoreScene
+from .scenes import CityScene, InstanceScene, LandingScene, PlaygroundScene, StoreScene
 from .setup.config import Settings
 
 
@@ -18,6 +18,7 @@ def launch():
     scenes.register("landing", LandingScene)
     scenes.register("city", CityScene)
     scenes.register("store", StoreScene)
+    scenes.register("instance", InstanceScene)
 
     # development
     scenes.register("playground", PlaygroundScene)

@@ -2,11 +2,12 @@ import pygame
 
 from ..component import PlayerTag, Velocity
 from ..core import GameObject
+from ..event import EventManager
 from ..world import WorldManager
 
 
 class PlayerControlSystem(GameObject):
-    def update(self, dt: float, world: WorldManager):
+    def update(self, dt: float, events: EventManager, world: WorldManager):
         keys = pygame.key.get_pressed()
 
         for entity_id in world.get_entities_with(PlayerTag, Velocity):
