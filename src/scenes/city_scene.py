@@ -11,7 +11,7 @@ from src.plugins.scene import (
     UIEventData,
     UIManager,
 )
-from src.plugins.system import RenderSystem
+from src.plugins.system import MovementSystem, PlayerControlSystem, RenderSystem
 from src.worlds import CityLevel1World
 
 logger = structlog.get_logger(__name__)
@@ -56,6 +56,8 @@ class CityScene(SceneBase):
         self.world = CityLevel1World()
 
         self.systems = [
+            PlayerControlSystem(),
+            MovementSystem(),
             RenderSystem(),
         ]
 
@@ -80,9 +82,15 @@ class CityScene(SceneBase):
             else:
                 self.events.emit(SceneEvent.SwitchTo, SceneEventData(name="landing"))
 
+    def handle_event(self, event: pygame.event.Event):
+        for system in self.systems:
+            system.handle_event(event, self.world.manager)
+
+        super().handle_event(event)
+
     def update(self, dt: float):
         for system in self.systems:
-            system.update(dt)
+            system.update(dt, self.world.manager)
 
     def draw(self, screen: pygame.Surface):
         for system in self.systems:
