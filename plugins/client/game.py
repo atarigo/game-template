@@ -4,7 +4,7 @@ import pygame
 import structlog
 
 from ..scene import SceneEvent, SceneEventData
-from .events import GameEvent, GameStateManager
+from .game_state import GameEvent, GameState, GameStateManager
 
 if TYPE_CHECKING:
     from ..core import Settings
@@ -46,7 +46,11 @@ class Game:
         pygame.quit()
 
     def run(self):
-        while self.state.current == GameEvent.Running:
+        while self.state.current == GameState.Running:
+            if self.state.current == GameState.Paused:
+                # for game saving, we need to pause the game
+                continue
+
             dt = self.clock.tick(60) / 1000  # seconds
 
             self.handle_events()
