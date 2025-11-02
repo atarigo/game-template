@@ -1,6 +1,6 @@
 import pygame
 
-from src.plugins.component import (
+from plugins.component import (
     Character,
     Collision,
     DoorTag,
@@ -11,8 +11,8 @@ from src.plugins.component import (
     Sprite,
     Velocity,
 )
-from src.plugins.core import GameObject
-from src.plugins.world import WorldManager
+from plugins.core import GameObject
+from plugins.world import WorldManager
 
 
 def create_player(manager: WorldManager, x: int, y: int, name: str = "player"):

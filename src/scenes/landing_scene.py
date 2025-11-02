@@ -1,9 +1,9 @@
 import pygame
 import structlog
 
-from src.plugins.client import GameEvent
-from src.plugins.event import EventManager
-from src.plugins.scene import SceneBase, SceneEvent, SceneEventData
+from plugins.client import GameEvent
+from plugins.event import EventManager
+from plugins.scene import SceneBase, SceneEvent, SceneEventData
 
 logger = structlog.get_logger(__name__)
 

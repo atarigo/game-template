@@ -1,8 +1,8 @@
 import pygame
 import structlog
 
-from src.plugins.event import EventManager
-from src.plugins.scene import (
+from plugins.event import EventManager
+from plugins.scene import (
     SceneBase,
     SceneEvent,
     SceneEventData,
@@ -11,8 +11,9 @@ from src.plugins.scene import (
     UIEventData,
     UIManager,
 )
-from src.plugins.system import MovementSystem, PlayerControlSystem, RenderSystem
-from src.worlds import CityLevel1World
+from plugins.system import MovementSystem, PlayerControlSystem, RenderSystem
+
+from ..worlds import CityLevel1World
 
 logger = structlog.get_logger(__name__)
 
