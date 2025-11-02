@@ -1,9 +1,9 @@
 import pygame
 
-from src.plugins.event import EventManager
-from src.plugins.scene import SceneBase
+from plugins.event import EventManager
+from plugins.scene import SceneBase
+from plugins.system import MovementSystem, PlayerControlSystem, RenderSystem
 
-from ..plugins.system import MovementSystem, PlayerControlSystem, RenderSystem
 from ..worlds.instances.v1 import BloodMoonForestWorld
 
 

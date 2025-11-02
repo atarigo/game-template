@@ -3,11 +3,12 @@ from pathlib import Path
 
 import structlog
 
-from .plugins.client import Game
-from .plugins.core.fonts import install_default_font_override
-from .plugins.core.logs import configure
-from .plugins.event import EventManager
-from .plugins.scene import SceneManager
+from plugins.client import Game
+from plugins.core.fonts import install_default_font_override
+from plugins.core.logs import configure
+from plugins.event import EventManager
+from plugins.scene import SceneManager
+
 from .scenes import CityScene, InstanceScene, LandingScene, PlaygroundScene, StoreScene
 from .setup.config import Settings
 

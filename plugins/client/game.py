@@ -3,14 +3,13 @@ from typing import TYPE_CHECKING
 import pygame
 import structlog
 
-from src.plugins.scene import SceneEvent, SceneEventData
-
+from ..scene import SceneEvent, SceneEventData
 from .events import GameEvent, GameStateManager
 
 if TYPE_CHECKING:
-    from src.plugins.event import EventManager
-    from src.plugins.scene import SceneManager
-    from src.setup.config import Settings
+    from ..core import Settings
+    from ..event import EventManager
+    from ..scene import SceneManager
 
 
 logger = structlog.get_logger(__name__)

@@ -4,7 +4,7 @@ import random
 import pygame
 import structlog
 
-from src.plugins.component import (
+from plugins.component import (
     Character,
     EnemyTag,
     NameLabel,
@@ -13,8 +13,8 @@ from src.plugins.component import (
     Sprite,
     Velocity,
 )
-from src.plugins.core import GameObject
-from src.plugins.world import WorldManager
+from plugins.core import GameObject
+from plugins.world import WorldManager
 
 logger = structlog.get_logger()
 

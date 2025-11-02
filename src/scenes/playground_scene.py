@@ -1,9 +1,9 @@
 import numpy as np
 import pygame
 
-from src.plugins.client import GameEvent
-from src.plugins.event import EventManager
-from src.plugins.scene import SceneBase
+from plugins.client import GameEvent
+from plugins.event import EventManager
+from plugins.scene import SceneBase
 
 
 def draw_function(

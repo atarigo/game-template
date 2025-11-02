@@ -19,7 +19,8 @@ dev: code.format code.test ## Run the development server
 	@$(PYTHON) python main.py
 
 code.test: ## Run tests
-	@$(PYTHON) pytest -v -rP
+#	@$(PYTHON) pytest -v -rP
+	@$(PYTHON) pytest
 
 code.format: ## Format code
 	@$(PYTHON) ruff check . --fix
